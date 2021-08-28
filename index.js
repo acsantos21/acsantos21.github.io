@@ -1,19 +1,20 @@
-//config
-    //Template Engine
-        app.engine('handlerbars',handlebars({defaultLayout: 'main'}))
-        app.set('view engine', 'handlebars')
-    //Conexão com o banco de dados Mysql
-        const sequelize = new sequelize('test','root','123456',{
-            host:"localhost",
-            dialect:'mysql'
-        })
-    //Rotas
+const express = require('express');
+const mongoose = require('mongoose');
+const swaggerUI = require('swagger-ui-express');
+const swaggerDocs = require('./swagger.json');
+const routes = require('./routes');
+const app = express();
+const cors = require('cors');
 
-        app.post('/add',function(req,res){
-            res.render('formulario')
-        })
 
-        app.listen(8081, function(){
-            console.log("Servidor rodando na url");
-
-        });
+mongoose.connect('mongodb+srv://awsUser:YwrWqqecAY4vqMTQ@cluster0.k32ju.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+    useNewUrlParser: true,
+    useCreateIndex: true
+});
+app.use(cors());
+app.use(express.json());
+app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+app.use(routes);
+app.listen('5000', () => {
+    console.log('rodando na porta 5000');
+});
